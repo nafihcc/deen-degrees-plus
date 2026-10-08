@@ -39,15 +39,17 @@ interface Ayah {
   surah: SurahMeta;
 }
 
+const BASE = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+
 const RECITERS = [
-  { id: "ar.alafasy", name: "Mishary Alafasy", image: "/reciters/ar.alafasy.jpg", origin: "Kuwait" },
-  { id: "ar.abdurrahmaansudais", name: "Abdur-Rahman As-Sudais", image: "/reciters/ar.abdurrahmaansudais.jpg", origin: "Imam of Masjid al-Haram" },
-  { id: "ar.saoodshuraym", name: "Saud Ash-Shuraim", image: "/reciters/ar.saoodshuraym.jpg", origin: "Masjid al-Haram" },
-  { id: "ar.mahermuaiqly", name: "Maher Al-Muaiqly", image: "/reciters/ar.mahermuaiqly.jpg", origin: "Imam of Masjid al-Haram" },
-  { id: "ar.husary", name: "Mahmoud Khalil Al-Husary", image: "/reciters/ar.husary.jpg", origin: "Egypt · Shaykh al-Maqari" },
-  { id: "ar.minshawi", name: "Mohamed Siddiq Al-Minshawi", image: "/reciters/ar.minshawi.jpg", origin: "Egypt · Legendary Murattal" },
-  { id: "ar.abdulbasitmurattal", name: "Abdul Basit Abdus-Samad", image: "/reciters/ar.abdulbasitmurattal.jpg", origin: "Egypt · Golden Throat" },
-  { id: "ar.ahmedajamy", name: "Ahmed Al-Ajamy", image: "/reciters/ar.ahmedajamy.jpg", origin: "Saudi Arabia" },
+  { id: "ar.alafasy", name: "Mishary Alafasy", image: `${BASE}/reciters/ar.alafasy.jpg`, origin: "Kuwait" },
+  { id: "ar.abdurrahmaansudais", name: "Abdur-Rahman As-Sudais", image: `${BASE}/reciters/ar.abdurrahmaansudais.jpg`, origin: "Imam of Masjid al-Haram" },
+  { id: "ar.saoodshuraym", name: "Saud Ash-Shuraim", image: `${BASE}/reciters/ar.saoodshuraym.jpg`, origin: "Masjid al-Haram" },
+  { id: "ar.mahermuaiqly", name: "Maher Al-Muaiqly", image: `${BASE}/reciters/ar.mahermuaiqly.jpg`, origin: "Imam of Masjid al-Haram" },
+  { id: "ar.husary", name: "Mahmoud Khalil Al-Husary", image: `${BASE}/reciters/ar.husary.jpg`, origin: "Egypt · Shaykh al-Maqari" },
+  { id: "ar.minshawi", name: "Mohamed Siddiq Al-Minshawi", image: `${BASE}/reciters/ar.minshawi.jpg`, origin: "Egypt · Legendary Murattal" },
+  { id: "ar.abdulbasitmurattal", name: "Abdul Basit Abdus-Samad", image: `${BASE}/reciters/ar.abdulbasitmurattal.jpg`, origin: "Egypt · Golden Throat" },
+  { id: "ar.ahmedajamy", name: "Ahmed Al-Ajamy", image: `${BASE}/reciters/ar.ahmedajamy.jpg`, origin: "Saudi Arabia" },
 ] as const;
 const RECITER_KEY = "faiz.reciter";
 const initials = (name: string) =>
@@ -338,8 +340,12 @@ function QuranPage() {
                     loading="eager"
                     className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
                     onError={(e) => {
-                      // Fallback just in case
-                      const target = e.target as HTMLElement;
+                      const target = e.currentTarget;
+                      if (!target.dataset.fallback) {
+                        target.dataset.fallback = "true";
+                        target.src = `https://raw.githubusercontent.com/nafihcc/deen-degrees-plus/main/public/reciters/${r.id}.jpg`;
+                        return;
+                      }
                       target.style.display = 'none';
                       if (target.nextElementSibling) {
                         (target.nextElementSibling as HTMLElement).style.display = 'grid';
